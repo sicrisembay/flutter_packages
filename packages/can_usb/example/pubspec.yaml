@@ -1,0 +1,14 @@
+name: can_usb_example
+description: Demonstrates basic usage of the can_usb package.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  can_usb:
+    path: ../

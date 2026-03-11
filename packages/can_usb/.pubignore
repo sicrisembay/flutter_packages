@@ -1,0 +1,7 @@
+# Files to exclude from the pub.dev package upload.
+# Syntax is identical to .gitignore.
+
+PUBLISH_CHECKLIST.md
+build/
+doc/
+*.iml
