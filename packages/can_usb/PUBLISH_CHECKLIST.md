@@ -290,7 +290,7 @@ Excluded files confirmed absent: `PUBLISH_CHECKLIST.md`, `build/`, `doc/`, `*.im
 
 ---
 
-## 7. Publish
+## 7. Publish ✅
 
 ```powershell
 cd packages\can_usb
@@ -299,17 +299,21 @@ flutter pub publish
 
 You will be prompted to confirm and authenticate via a browser.
 
+**Result:** Published successfully. Package live at https://pub.dev/packages/can_usb
+
 ---
 
 ## 8. Post-Publish
 
-- [ ] Tag and push the release commit in git:
+- [x] Tag and push the release commit in git:
   ```powershell
   git tag can_usb-v0.1.0
   git push origin can_usb-v0.1.0
   ```
-- [ ] Verify the package page at `https://pub.dev/packages/can_usb`
-- [ ] Check the pub.dev score and address any remaining recommendations
+- [x] Verify the package page at `https://pub.dev/packages/can_usb` — ✅ live,
+      metadata/topics/repository all correct.
+- [ ] Check the pub.dev score and address any remaining recommendations —
+      ⏳ analysis pending (normal for new packages, check back in ~1 hour).
 
 ---
 
