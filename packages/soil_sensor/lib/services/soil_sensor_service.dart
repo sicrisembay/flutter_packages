@@ -5,8 +5,8 @@ import 'dart:typed_data';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:usb_serial/usb_serial.dart';
 
-import 'package:saik_sinapulan/features/sensor/models/sensor_reading.dart';
-import 'package:saik_sinapulan/features/sensor/services/modbus_rtu_service.dart';
+import 'package:soil_sensor/models/sensor_reading.dart';
+import 'package:soil_sensor/services/modbus_rtu_service.dart';
 
 /// High-level USB serial sensor service.
 ///
