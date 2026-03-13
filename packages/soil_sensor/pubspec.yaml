@@ -1,10 +1,18 @@
 name: soil_sensor
 description: "Modbus RTU soil sensor (NPK/moisture/pH) integration for Flutter."
 version: 0.1.0
-# publish_to: 'none'   # remove this comment-block when ready to publish to pub.dev
+homepage: https://github.com/sicrisembay/flutter_packages
+repository: https://github.com/sicrisembay/flutter_packages
+issue_tracker: https://github.com/sicrisembay/flutter_packages/issues
+topics:
+  - modbus
+  - serial
+  - sensor
+  - agriculture
+  - iot
 
 environment:
-  sdk: ^3.11.1
+  sdk: ">=3.5.0 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:

@@ -5,7 +5,10 @@ import 'dart:typed_data';
 /// Supports FC03 (Read Holding Registers) as required by the soil sensor.
 /// All multi-byte values are big-endian on the wire; CRC is sent lo-byte first.
 class ModbusRtuService {
-  // CRC-16-ANSI: poly = 0xA001 (reflected 0x8005), init = 0xFFFF
+  /// Calculates the CRC-16/ANSI (Modbus) checksum for [length] bytes of [data].
+  ///
+  /// Polynomial: 0xA001 (reflected 0x8005), initial value: 0xFFFF.
+  /// The result is a 16-bit unsigned integer; transmit the low byte first.
   static int calculateCrc16(Uint8List data, int length) {
     int crc = 0xFFFF;
     for (int i = 0; i < length; i++) {
