@@ -949,5 +949,111 @@ void main() {
         expect(written[0][9], equals(cmdEnterDfu));
       },
     );
+
+    // -------------------------------------------------------------------------
+    // txFrames stream
+    // -------------------------------------------------------------------------
+
+    test('txFrames stream emits frame after successful sendFrame', () async {
+      await connect();
+      final received = <CanFrame>[];
+      final sub = device.txFrames.listen(received.add);
+
+      final frame = CanFrame(
+        frameType: const CanFrameType.classic(),
+        messageId: 0x601,
+        dlc: 2,
+        data: Uint8List.fromList([0x40, 0x00]),
+      );
+      injectResponse(Uint8List.fromList([cmdSendDownstream, 0x00]));
+      await device.sendFrame(frame);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(received.length, equals(1));
+      expect(received[0].messageId, equals(0x601));
+      expect(received[0].dlc, equals(2));
+      expect(received[0].data, equals(Uint8List.fromList([0x40, 0x00])));
+      await sub.cancel();
+    });
+
+    test('txFrames emits the exact frame object passed to sendFrame', () async {
+      await connect();
+      final received = <CanFrame>[];
+      final sub = device.txFrames.listen(received.add);
+
+      final frame = CanFrame(
+        frameType: const CanFrameType(isFd: true, brsOff: false, isExtended: true),
+        messageId: 0x12345678,
+        dlc: 8,
+        data: Uint8List.fromList([1, 2, 3, 4, 5, 6, 7, 8]),
+      );
+      injectResponse(Uint8List.fromList([cmdSendDownstream, 0x00]));
+      await device.sendFrame(frame);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(received.length, equals(1));
+      expect(received[0], same(frame)); // identical object reference
+      await sub.cancel();
+    });
+
+    test('txFrames does NOT emit when sendFrame times out', () async {
+      await connect();
+      final received = <CanFrame>[];
+      final sub = device.txFrames.listen(received.add);
+
+      final frame = CanFrame(
+        frameType: const CanFrameType.classic(),
+        messageId: 0x601,
+        dlc: 0,
+        data: Uint8List(0),
+      );
+      // No injectResponse — will time out.
+      await expectLater(
+        () => device.sendFrame(frame),
+        throwsA(isA<CanTimeoutException>()),
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+
+      expect(received, isEmpty);
+      await sub.cancel();
+    });
+
+    test('txFrames and rxFrames are independent streams', () async {
+      await connect();
+      final txReceived = <CanFrame>[];
+      final rxReceived = <CanFrame>[];
+      final txSub = device.txFrames.listen(txReceived.add);
+      final rxSub = device.rxFrames.listen(rxReceived.add);
+
+      // Inject an unsolicited upstream (RX) frame.
+      final upstreamPayload = Uint8List.fromList([
+        cmdSendUpstream,
+        0x00,
+        0x05, 0x00, 0x00, 0x00,
+        0x01,
+        0xFF,
+      ]);
+      mockRx.add(buildFrame(payload: upstreamPayload));
+      await Future<void>.delayed(Duration.zero);
+
+      // Then send a downstream (TX) frame.
+      injectResponse(Uint8List.fromList([cmdSendDownstream, 0x00]));
+      final txFrame = CanFrame(
+        frameType: const CanFrameType.classic(),
+        messageId: 0x200,
+        dlc: 1,
+        data: Uint8List.fromList([0xAB]),
+      );
+      await device.sendFrame(txFrame);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(rxReceived.length, equals(1));
+      expect(rxReceived[0].messageId, equals(0x05));
+      expect(txReceived.length, equals(1));
+      expect(txReceived[0].messageId, equals(0x200));
+
+      await txSub.cancel();
+      await rxSub.cancel();
+    });
   });
 }

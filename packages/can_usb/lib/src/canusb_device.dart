@@ -68,6 +68,8 @@ class CanusbDevice {
   // Broadcast stream controllers for unsolicited notifications.
   final StreamController<CanFrame> _rxFramesCtrl =
       StreamController.broadcast();
+  final StreamController<CanFrame> _txFramesCtrl =
+      StreamController.broadcast();
   final StreamController<ProtocolStatus> _protocolStatusCtrl =
       StreamController.broadcast();
   final StreamController<CanStats> _canStatsNotifCtrl =
@@ -101,6 +103,9 @@ class CanusbDevice {
 
   /// Stream of CAN / CAN-FD frames received from the bus (CMD_SEND_UPSTREAM).
   Stream<CanFrame> get rxFrames => _rxFramesCtrl.stream;
+
+  /// Stream of CAN / CAN-FD frames successfully sent to the bus (CMD_SEND_DOWNSTREAM).
+  Stream<CanFrame> get txFrames => _txFramesCtrl.stream;
 
   /// Stream of FDCAN protocol status notifications (CMD_PROTOCOL_STATUS).
   Stream<ProtocolStatus> get protocolStatus => _protocolStatusCtrl.stream;
@@ -155,6 +160,7 @@ class CanusbDevice {
     _parserSub?.cancel();
     _parser.dispose();
     _rxFramesCtrl.close();
+    _txFramesCtrl.close();
     _protocolStatusCtrl.close();
     _canStatsNotifCtrl.close();
   }
@@ -209,6 +215,7 @@ class CanusbDevice {
       cmdSendDownstream,
       buildSendDownstreamRequest(frame),
     );
+    _txFramesCtrl.add(frame); // emit only after device ack
     return parseSendDownstreamResponse(resp);
   }
 
