@@ -6,7 +6,7 @@ import 'dart:typed_data';
 /// Encodes and decodes the TX_TYPE / RX_TYPE byte used in CMD_SEND_DOWNSTREAM
 /// and CMD_SEND_UPSTREAM payloads.
 ///
-/// Bit layout (FRAME_SPECIFICATION.md):
+/// Bit layout (https://github.com/sicrisembay/webserial_canfd/blob/main/firmware/FRAME_SPECIFICATION.md ):
 /// | Bit | Meaning                          |
 /// |-----|----------------------------------|
 /// |  0  | 0 = CAN Classic, 1 = CAN-FD      |

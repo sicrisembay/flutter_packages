@@ -1,6 +1,6 @@
 /// Command ID constants for the USB-CANFD binary frame protocol.
 ///
-/// Matches the CMD_* definitions in FRAME_SPECIFICATION.md.
+/// Matches the CMD_* definitions in https://github.com/sicrisembay/webserial_canfd/blob/main/firmware/FRAME_SPECIFICATION.md .
 library;
 
 /// Get Device ID (request / response).

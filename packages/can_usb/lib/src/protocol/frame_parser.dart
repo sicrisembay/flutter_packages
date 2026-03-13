@@ -4,7 +4,7 @@
 /// serial transport into [addBytes]; it emits complete, checksum-verified
 /// [ParsedFrame] objects via the [frames] stream.
 ///
-/// The parser follows the algorithm in FRAME_SPECIFICATION.md:
+/// The parser follows the algorithm in https://github.com/sicrisembay/webserial_canfd/blob/main/firmware/FRAME_SPECIFICATION.md :
 ///   1. Scan forward for a TAG byte (0xFF).
 ///   2. Wait until at least [kFrameOverhead] (10) bytes are buffered.
 ///   3. Read the 16-bit little-endian Length field; reject and re-scan if

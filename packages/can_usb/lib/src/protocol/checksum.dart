@@ -1,6 +1,6 @@
 /// Two's complement checksum utilities for the USB-CANFD frame protocol.
 ///
-/// The algorithm is defined in FRAME_SPECIFICATION.md:
+/// The algorithm is defined in https://github.com/sicrisembay/webserial_canfd/blob/main/firmware/FRAME_SPECIFICATION.md :
 ///   1. Sum all bytes in the frame (TAG through last payload byte).
 ///   2. Compute two's complement: `checksum = (~sum + 1) & 0xFF`.
 ///   3. A complete frame (including checksum) must sum to 0 mod 256.

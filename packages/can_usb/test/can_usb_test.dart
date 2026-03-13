@@ -119,7 +119,7 @@ void main() {
   // ---------------------------------------------------------------------------
   group('buildFrame', () {
     test('spec Example 1 — Get Device ID request (no timestamp, no seq)', () {
-      // Expected bytes from FRAME_SPECIFICATION.md Example 1:
+      // Expected bytes from https://github.com/sicrisembay/webserial_canfd/blob/main/firmware/FRAME_SPECIFICATION.md Example 1:
       // 0xFF 0x0B 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xF6
       final frame = buildFrame(
         payload: Uint8List.fromList([0x00]),

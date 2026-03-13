@@ -1,6 +1,6 @@
 /// Frame builder for the USB-CANFD binary frame protocol.
 ///
-/// Frame layout (from FRAME_SPECIFICATION.md):
+/// Frame layout (from https://github.com/sicrisembay/webserial_canfd/blob/main/firmware/FRAME_SPECIFICATION.md ):
 ///
 /// | Field      | Offset | Size | Description                          |
 /// |------------|--------|------|--------------------------------------|
