@@ -24,6 +24,12 @@ class SoilSensorService {
 
   // ── Windows-specific state ────────────────────────────────────────────────
   SerialPort? _winPort;
+  // A single persistent reader whose isolate lives for the whole connection.
+  // Its bytes are forwarded to a broadcast StreamController so each
+  // transaction can independently subscribe without creating a new isolate.
+  SerialPortReader? _winReader;
+  StreamSubscription<Uint8List>? _winReaderSub;
+  final _winRx = StreamController<Uint8List>.broadcast();
 
   // ─────────────────────────────────────────────────────────────────────────
 
@@ -101,6 +107,20 @@ class SoilSensorService {
 
     // Allow port to stabilise (as specified in the protocol doc).
     await Future<void>.delayed(const Duration(milliseconds: 200));
+
+    // Start the persistent reader for Windows now that the port is stable.
+    if (Platform.isWindows) {
+      _winReader = SerialPortReader(_winPort!);
+      _winReaderSub = _winReader!.stream.listen(
+        (data) {
+          if (!_winRx.isClosed) _winRx.add(data);
+        },
+        onError: (Object e) {
+          if (!_winRx.isClosed) _winRx.addError(e);
+        },
+        cancelOnError: false,
+      );
+    }
   }
 
   /// Close the active connection.
@@ -109,6 +129,11 @@ class SoilSensorService {
       await _usbPort?.close();
       _usbPort = null;
     } else if (Platform.isWindows) {
+      // Cancel the persistent reader subscription first so the isolate stops
+      // forwarding bytes before we close the port underneath it.
+      await _winReaderSub?.cancel();
+      _winReaderSub = null;
+      _winReader = null;
       _winPort?.close();
       _winPort?.dispose();
       _winPort = null;
@@ -238,13 +263,20 @@ class SoilSensorService {
 
   Future<Uint8List> _transactWindows(
       Uint8List request, int expectedLength) async {
+    // Write the request BEFORE subscribing. The broadcast stream discards
+    // events when there is no listener, so any stale bytes that arrived
+    // between transactions have already been dropped. The RS485 response
+    // takes several milliseconds to arrive (bus turnaround + baud rate),
+    // so the subscription below is always registered before response bytes
+    // can reach the broadcast stream.
     final port = _winPort!;
+    port.write(request);
+
     final buffer = <int>[];
     final completer = Completer<Uint8List>();
-    final reader = SerialPortReader(port, timeout: 1100);
     late StreamSubscription<Uint8List> sub;
 
-    sub = reader.stream.listen(
+    sub = _winRx.stream.listen(
       (data) {
         buffer.addAll(data);
         if (buffer.length >= expectedLength && !completer.isCompleted) {
@@ -259,23 +291,16 @@ class SoilSensorService {
           completer.completeError(e);
         }
       },
-      onDone: () {
-        if (!completer.isCompleted) {
-          completer.completeError(
-              TimeoutException('Port stream ended before response complete.'));
-        }
-      },
     );
 
-    port.write(request);
-
     return completer.future.timeout(
-      const Duration(milliseconds: 1000),
+      const Duration(milliseconds: 2000),
       onTimeout: () {
         sub.cancel();
         throw TimeoutException(
           'Timeout waiting for response.\n'
-          'Received: ${buffer.length}/$expectedLength bytes.',
+          'Received: ${buffer.length}/$expectedLength bytes.\n'
+          'Check baud rate, slave address, and wiring.',
         );
       },
     );
