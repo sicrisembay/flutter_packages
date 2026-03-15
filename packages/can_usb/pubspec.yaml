@@ -1,8 +1,7 @@
 name: can_usb
 description: >-
-  A Flutter package for communicating with a USB-CANFD adapter over serial.
-  Provides a serial transport layer, binary frame builder/parser, and a
-  high-level CanusbDevice API for sending and receiving CAN frames.
+  A Flutter package for USB-CANFD communication over serial (UART/USB-CDC),
+  with a frame builder/parser and a high-level CanusbDevice API.
 version: 0.1.0
 homepage: https://github.com/sicrisembay/flutter_packages/tree/main/packages/can_usb
 repository: https://github.com/sicrisembay/flutter_packages/tree/main/packages/can_usb

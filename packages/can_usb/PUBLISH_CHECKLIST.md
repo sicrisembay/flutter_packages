@@ -312,8 +312,9 @@ You will be prompted to confirm and authenticate via a browser.
   ```
 - [x] Verify the package page at `https://pub.dev/packages/can_usb` — ✅ live,
       metadata/topics/repository all correct.
-- [ ] Check the pub.dev score and address any remaining recommendations —
-      ⏳ analysis pending (normal for new packages, check back in ~1 hour).
+- [x] Check the pub.dev score and address any remaining recommendations —
+      **150 / 160 pub points** (as of 2026-03-15).
+      - ~~`pubspec.yaml` description was too long (> 180 chars).~~ ✅ Fixed — shortened to 136 chars.
 
 ---
 
@@ -379,3 +380,4 @@ jobs:
 | 11 | `.pubignore` | `can_usb.iml` not excluded from upload | ✅ Fixed | ~~Low~~ |
 | 12 | Publisher account | 2FA not confirmed active; publisher domain deferred | ⬜ Pending (2FA) / ✅ Deferred (publisher) | **Blocker** (2FA only) |
 | 13 | `example/` | Example app not verified to build | ✅ Analysed clean; no platform dirs (see §3) | ~~High~~ |
+| 14 | `pubspec.yaml` | Description too long (> 180 chars) — 0/10 pub points | ✅ Fixed — shortened to 136 chars | ~~Medium~~ |

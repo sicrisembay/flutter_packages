@@ -292,7 +292,7 @@ Warning will clear after committing all changes to git (see §8).
 
 ---
 
-## 7. Publish
+## 7. Publish ✅
 
 **Without a publisher (personal account):**
 ```powershell
@@ -309,19 +309,21 @@ flutter pub publish --publisher=yourname.dev
 Replace `yourname.dev` with your actual publisher ID.
 You will be prompted to confirm and authenticate via a browser.
 
+**Result:** Published as `soil_sensor 0.1.0` — live at https://pub.dev/packages/soil_sensor
+
 ---
 
-## 8. Post-Publish
+## 8. Post-Publish ✅
 
-- [ ] Tag and push the release commit in git:
+- [x] Tag and push the release commit in git:
   ```powershell
   git tag soil_sensor-v0.1.0
   git push origin soil_sensor-v0.1.0
   ```
-- [ ] Verify the package page at `https://pub.dev/packages/soil_sensor` — check
+- [x] Verify the package page at `https://pub.dev/packages/soil_sensor` — check
       metadata, topics, and repository link are all correct.
-- [ ] Check the pub.dev score and address any remaining recommendations
-      (analysis may take ~1 hour for a new package).
+- [x] Check the pub.dev score and address any remaining recommendations.
+      **Result: 160 / 160 points.**
 
 ---
 
@@ -369,7 +371,7 @@ jobs:
 
 | # | File | Issue | Status | Severity |
 |---|------|-------|--------|----------|
-| 1 | `LICENSE` | Placeholder text — no real license | ⬜ Pending | **Blocker** |
+| 1 | `LICENSE` | Placeholder text — no real license | ✅ Fixed | ~~Blocker~~ |
 | 2 | `pubspec.yaml` | Missing `homepage`, `repository`, `issue_tracker`, `topics` | ✅ Fixed | ~~Blocker~~ |
 | 3 | `README.md` | Entirely TODO placeholders | ✅ Fixed | ~~Blocker~~ |
 | 4 | `CHANGELOG.md` | TODO placeholder entry | ✅ Fixed | ~~High~~ |
@@ -379,5 +381,9 @@ jobs:
 | 8 | Source files | Doc comment coverage not yet audited | ✅ Fixed (0 warnings, 0 errors) | ~~Medium~~ |
 | 9 | *(missing)* | No `.pubignore` — `soil_sensor.iml`, `build/` will be uploaded | ✅ Fixed | ~~Medium~~ |
 | 10 | `pubspec.yaml` | `publish_to: 'none'` comment block should be removed | ✅ Fixed | ~~Low~~ |
-| 11 | Publisher account | 2FA not confirmed active | ⬜ Pending | **Blocker** |
-| 12 | Package name | Availability on pub.dev not yet confirmed | ⬜ Pending | **Blocker** |
+| 11 | Publisher account | 2FA not confirmed active | ✅ Done | ~~Blocker~~ |
+| 12 | Package name | Availability on pub.dev not yet confirmed | ✅ Confirmed available | ~~Blocker~~ |
+
+**Published:** `soil_sensor 0.1.0` — https://pub.dev/packages/soil_sensor  
+**pub.dev score:** 160 / 160  
+**Tag:** `soil_sensor-v0.1.0` pushed to remote
