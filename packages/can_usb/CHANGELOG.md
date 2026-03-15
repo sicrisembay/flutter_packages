@@ -1,3 +1,8 @@
+## 0.1.1
+
+* Metadata fix: shortened `pubspec.yaml` description to comply with pub.dev
+  60–180 character limit (no functional changes).
+
 ## 0.1.0
 
 * Initial release.
