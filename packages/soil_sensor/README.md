@@ -83,9 +83,10 @@ The main entry point.
 | `SoilSensorService({baudRate, slaveAddress})` | Constructor. Defaults: `baudRate = 9600`, `slaveAddress = 1`. |
 | `listDevices()` | Returns a list of connectable device identifiers. |
 | `connect(deviceId)` | Opens the serial port and configures it. |
-| `disconnect()` | Closes and releases the serial port. |
+| `disconnect()` | Closes and releases the serial port. Call this between connections. |
+| `dispose()` | Disconnects and permanently releases all resources. Call in `dispose()` when the service will not be reused. |
 | `isConnected` | `true` if a port is currently open. |
-| `readSensor({maxRetries})` | Reads all available sensor registers and returns a `SensorReading`. |
+| `readSensor({maxRetries})` | Reads all available sensor registers and returns a `SensorReading`. Makes 1 initial attempt plus up to `maxRetries` retries. |
 
 ### `SensorReading`
 

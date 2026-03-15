@@ -287,16 +287,26 @@ Warning will clear after committing all changes to git (see §8).
       *pub.dev → Profile → Create Publisher* and verify domain ownership via
       Google Search Console. A publisher can be created and the package transferred
       to it at any time after initial publish.
+- [ ] *(If using a publisher)* Note the publisher ID — you will pass it to the
+      `--publisher` flag in Step 7 (e.g. `flutter pub publish --publisher=yourname.dev`).
 
 ---
 
 ## 7. Publish
 
+**Without a publisher (personal account):**
 ```powershell
 cd packages\soil_sensor
 flutter pub publish
 ```
 
+**With a publisher (recommended if you completed the optional publisher setup in Step 6):**
+```powershell
+cd packages\soil_sensor
+flutter pub publish --publisher=yourname.dev
+```
+
+Replace `yourname.dev` with your actual publisher ID.
 You will be prompted to confirm and authenticate via a browser.
 
 ---

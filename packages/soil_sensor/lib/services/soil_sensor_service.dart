@@ -123,7 +123,9 @@ class SoilSensorService {
     }
   }
 
-  /// Close the active connection.
+  /// Close the active connection and release all resources.
+  ///
+  /// Prefer calling [dispose] when the service will not be used again.
   Future<void> disconnect() async {
     if (Platform.isAndroid) {
       await _usbPort?.close();
@@ -140,9 +142,22 @@ class SoilSensorService {
     }
   }
 
+  /// Disconnect and permanently close the service.
+  ///
+  /// Call this when the [SoilSensorService] will not be used again (e.g. in
+  /// a widget's `dispose()` callback). After calling [dispose] the service
+  /// must not be used; create a new instance if you need to reconnect.
+  Future<void> dispose() async {
+    await disconnect();
+    await _winRx.close();
+  }
+
   // ── Reading ───────────────────────────────────────────────────────────────
 
-  /// Read sensor data with up to [maxRetries] attempts.
+  /// Read sensor data, retrying up to [maxRetries] times on failure.
+  ///
+  /// Makes one initial attempt plus up to [maxRetries] retry attempts
+  /// (i.e. [maxRetries]`+ 1` total tries).
   ///
   /// First attempts the extended 7-register read (moisture, temperature,
   /// conductivity, pH, N, P, K).  Falls back to the basic 3-register read
