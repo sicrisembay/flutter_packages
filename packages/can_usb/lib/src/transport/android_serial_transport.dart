@@ -135,4 +135,10 @@ class AndroidSerialTransport implements ISerialTransport {
     _usbEventSub?.cancel();
     _usbEventSub = null;
   }
+
+  /// Disposes of all resources. Call when the transport is no longer needed.
+  Future<void> dispose() async {
+    await disconnect();
+    await _controller.close();
+  }
 }

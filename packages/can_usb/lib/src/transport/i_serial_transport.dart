@@ -1,7 +1,8 @@
 /// Abstract serial transport interface.
 ///
-/// Implemented by [SerialPortTransport] (using `flutter_libserialport`).
-/// Can also be implemented by a mock for unit testing.
+/// Implemented by [SerialPortTransport] (using `flutter_libserialport`, for
+/// Windows / Linux / macOS) and [AndroidSerialTransport] (using `usb_serial`,
+/// for Android). Can also be implemented by a mock for unit testing.
 library;
 
 import 'dart:typed_data';

@@ -17,8 +17,8 @@ a high-level `CanusbDevice` API for sending and receiving CAN / CAN-FD frames.
 - **Protocol status** stream — monitor FDCAN bus state and error counters
 - **DFU entry** — trigger STM32 ROM USB bootloader for firmware updates
 - **Testable** — injectable `ISerialTransport` interface for easy mocking
-- **Supported platforms**: Windows, Linux, macOS, Android (anywhere
-  `flutter_libserialport` runs)
+- **Supported platforms**: Windows, Linux, macOS (via `flutter_libserialport`)
+  and Android (via `usb_serial` / Android USB Host API)
 
 ## Getting started
 
@@ -38,7 +38,7 @@ Add `can_usb` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  can_usb: ^0.1.0
+  can_usb: ^0.1.2
 ```
 
 Then run:

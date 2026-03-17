@@ -1,3 +1,15 @@
+## 0.1.2
+
+* feat(Android): add `AndroidSerialTransport` — new `ISerialTransport`
+  implementation for Android using the USB Host API (`usb_serial` package).
+  `CanusbDevice` now auto-selects `AndroidSerialTransport` on Android and
+  `SerialPortTransport` on all other platforms.
+* fix(`SerialPortTransport`): null `_port` in `onError` so `isConnected`
+  returns `false` immediately on physical USB removal (Windows).
+* fix(`SerialPortTransport`): explicitly close the OS serial handle in
+  `onError` so Windows releases the COM port and allows re-open after
+  the device is plugged back in.
+
 ## 0.1.1
 
 * Metadata fix: shortened `pubspec.yaml` description to comply with pub.dev
