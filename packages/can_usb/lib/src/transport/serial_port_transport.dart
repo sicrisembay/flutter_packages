@@ -117,6 +117,12 @@ class SerialPortTransport implements ISerialTransport {
         // wait for onDone (which may never fire on Windows in this case).
         if (identical(_reader, reader)) {
           if (!readerClosed.isCompleted) readerClosed.complete();
+          // Explicitly close the OS handle so Windows can update its COM
+          // port enumeration and the same port can be re-opened after
+          // the device is plugged back in.
+          try {
+            _port?.close();
+          } catch (_) {}
           _port = null;
           _reader = null;
           _readerClosed = null;
