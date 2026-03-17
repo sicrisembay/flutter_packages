@@ -109,7 +109,19 @@ class SerialPortTransport implements ISerialTransport {
     _reader = reader;
     reader.stream.listen(
       (data) => _controller?.add(Uint8List.fromList(data)),
-      onError: (Object err) => _controller?.addError(err),
+      onError: (Object err) {
+        _controller?.addError(err);
+        // A read error almost always means the USB device was physically
+        // removed.  Mark the transport as disconnected immediately so that
+        // callers get an accurate isConnected == false without having to
+        // wait for onDone (which may never fire on Windows in this case).
+        if (identical(_reader, reader)) {
+          if (!readerClosed.isCompleted) readerClosed.complete();
+          _port = null;
+          _reader = null;
+          _readerClosed = null;
+        }
+      },
       onDone: () {
         if (!readerClosed.isCompleted) readerClosed.complete();
         // Only null out the fields if this reader is still the active one.
