@@ -6,6 +6,7 @@ export 'src/exceptions.dart';
 
 // Transport layer
 export 'src/transport/i_serial_transport.dart';
+export 'src/transport/android_serial_transport.dart';
 export 'src/transport/serial_port_transport.dart';
 
 // Protocol layer

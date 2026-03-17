@@ -20,6 +20,7 @@
 library;
 
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:synchronized/synchronized.dart';
@@ -37,6 +38,7 @@ import 'models/can_frame.dart';
 import 'models/device_id_info.dart';
 import 'protocol/frame_builder.dart';
 import 'protocol/frame_parser.dart';
+import 'transport/android_serial_transport.dart';
 import 'transport/serial_port_transport.dart';
 
 export 'transport/i_serial_transport.dart' show SerialPortInfo;
@@ -84,15 +86,19 @@ class CanusbDevice {
 
   /// Creates a [CanusbDevice].
   ///
-  /// [transport] — inject a custom transport for testing; defaults to
-  /// [SerialPortTransport].
+  /// [transport] — inject a custom transport for testing; omit it to use
+  /// the correct transport for the current platform automatically:
+  /// [AndroidSerialTransport] on Android, [SerialPortTransport] elsewhere.
   ///
   /// [commandTimeout] — how long to wait for a response before throwing
   /// [CanTimeoutException].
   CanusbDevice({
     ISerialTransport? transport,
     this.commandTimeout = kDefaultCommandTimeout,
-  }) : _transport = transport ?? SerialPortTransport() {
+  }) : _transport = transport ??
+            (Platform.isAndroid
+                ? AndroidSerialTransport()
+                : SerialPortTransport()) {
     // Wire parsed frames into the routing handler.
     _parserSub = _parser.frames.listen(_routeFrame);
   }
