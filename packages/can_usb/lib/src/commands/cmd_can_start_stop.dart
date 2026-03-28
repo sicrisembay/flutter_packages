@@ -4,6 +4,7 @@ library;
 
 import 'dart:typed_data';
 
+import '../models/bitrate.dart';
 import 'command_ids.dart';
 
 // ---------------------------------------------------------------------------
@@ -11,7 +12,17 @@ import 'command_ids.dart';
 // ---------------------------------------------------------------------------
 
 /// Builds the request payload for CMD_CAN_START.
-Uint8List buildCanStartRequest() => Uint8List.fromList([cmdCanStart]);
+///
+/// [arbBitrate] selects the arbitration phase bitrate (`Payload[1]`).
+/// [dataBitrate] selects the data phase bitrate (`Payload[2]`).
+///
+/// Defaults to 500 kbit/s arbitration and 2000 kbit/s data phase, which is
+/// a common CAN-FD configuration.
+Uint8List buildCanStartRequest({
+  ArbBitrate arbBitrate = ArbBitrate.rate500k,
+  DataBitrate dataBitrate = DataBitrate.rate2000k,
+}) =>
+    Uint8List.fromList([cmdCanStart, arbBitrate.index, dataBitrate.index]);
 
 /// Parses the response payload for CMD_CAN_START.
 ///

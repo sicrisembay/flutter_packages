@@ -104,7 +104,10 @@ class _DevicePageState extends State<DevicePage> {
       _addLog('Device ID: 0x${info.deviceId.toRadixString(16).toUpperCase()}  '
           'FW: ${info.versionMajor}.${info.versionMinor}.${info.versionPatch}');
 
-      await _device.canStart();
+      await _device.canStart(
+        arbBitrate: ArbBitrate.rate500k,
+        dataBitrate: DataBitrate.rate2000k,
+      );
       _addLog('CAN bus started');
     } on CanException catch (e) {
       _addLog('ERROR  $e');

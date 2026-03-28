@@ -28,6 +28,7 @@ import 'package:synchronized/synchronized.dart';
 import 'commands/command_ids.dart';
 import 'commands/cmd_get_device_id.dart';
 import 'commands/cmd_can_start_stop.dart';
+import 'models/bitrate.dart';
 import 'commands/cmd_send_downstream.dart';
 import 'commands/cmd_send_upstream.dart';
 import 'commands/cmd_protocol_status.dart';
@@ -189,9 +190,24 @@ class CanusbDevice {
 
   /// Starts the FDCAN peripheral on the device.
   ///
+  /// [arbBitrate] selects the arbitration phase bitrate
+  /// (default: [ArbBitrate.rate500k] — 500 kbit/s).
+  ///
+  /// [dataBitrate] selects the data phase bitrate
+  /// (default: [DataBitrate.rate2000k] — 2000 kbit/s).
+  ///
   /// Returns the HAL status byte (0 = HAL_OK).
-  Future<int> canStart() async {
-    final resp = await _sendCommand(cmdCanStart, buildCanStartRequest());
+  Future<int> canStart({
+    ArbBitrate arbBitrate = ArbBitrate.rate500k,
+    DataBitrate dataBitrate = DataBitrate.rate2000k,
+  }) async {
+    final resp = await _sendCommand(
+      cmdCanStart,
+      buildCanStartRequest(
+        arbBitrate: arbBitrate,
+        dataBitrate: dataBitrate,
+      ),
+    );
     return parseCanStartResponse(resp);
   }
 

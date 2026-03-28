@@ -100,12 +100,19 @@ await device.sendFrame(fdFrame);
 ```dart
 final info = await device.getDeviceId();
 print('Device ID: 0x${info.deviceId.toRadixString(16)}');
-print('Firmware:  ${info.major}.${info.minor}.${info.patch}');
+print('Firmware:  ${info.versionMajor}.${info.versionMinor}.${info.versionPatch}');
 
-await device.canStart();   // Start FDCAN peripheral
+// Start FDCAN peripheral with explicit bitrates
+await device.canStart(
+  arbBitrate: ArbBitrate.rate500k,   // 500 kbit/s arbitration phase
+  dataBitrate: DataBitrate.rate2000k, // 2000 kbit/s data phase
+);
 // ... communicate ...
 await device.canStop();    // Stop FDCAN peripheral
 ```
+
+> **Note:** `canStart()` defaults to `ArbBitrate.rate500k` / `DataBitrate.rate2000k` when
+> no bitrate arguments are supplied.
 
 ### Protocol status and statistics
 
@@ -155,6 +162,8 @@ final device = CanusbDevice(transport: mockTransport);
 | `CanStats` | Error counters and frame loss statistics |
 | `DeviceIdInfo` | Device ID byte and firmware version |
 | `ProtocolStatus` | FDCAN bus state and error passive/warning flags |
+| `ArbBitrate` | Arbitration phase bitrate enum (`rate10k` … `rate1000k`) |
+| `DataBitrate` | Data phase bitrate enum (`rate100k` … `rate5000k`) |
 | `CanException` | Base exception class |
 | `CanConnectionException` | Thrown on serial port open/close failure |
 | `CanTimeoutException` | Thrown when a command receives no response in time |

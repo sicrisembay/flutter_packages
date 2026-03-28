@@ -2,7 +2,7 @@ name: can_usb
 description: >-
   A Flutter package for USB-CANFD communication over serial (UART/USB-CDC),
   with a frame builder/parser and a high-level CanusbDevice API.
-version: 0.1.2
+version: 0.1.3
 homepage: https://github.com/sicrisembay/flutter_packages/tree/main/packages/can_usb
 repository: https://github.com/sicrisembay/flutter_packages/tree/main/packages/can_usb
 issue_tracker: https://github.com/sicrisembay/flutter_packages/issues

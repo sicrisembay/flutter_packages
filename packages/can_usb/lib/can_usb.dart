@@ -15,6 +15,7 @@ export 'src/protocol/frame_builder.dart';
 export 'src/protocol/frame_parser.dart';
 
 // Models
+export 'src/models/bitrate.dart';
 export 'src/models/can_frame.dart';
 export 'src/models/can_stats.dart';
 export 'src/models/device_id_info.dart';

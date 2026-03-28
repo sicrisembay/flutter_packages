@@ -456,8 +456,35 @@ void main() {
   // CMD_CAN_START / CMD_CAN_STOP / CMD_DEVICE_RESET
   // ---------------------------------------------------------------------------
   group('CMD_CAN_START / STOP / RESET', () {
-    test('CAN start request payload is [0x01]', () {
-      expect(buildCanStartRequest(), equals(Uint8List.fromList([0x01])));
+    test(
+      'CAN start request payload uses default bitrates '
+      '[0x01, arbIdx=2 (500K), dataIdx=1 (2000K)]',
+      () {
+        // ArbBitrate.rate500k.index == 2, DataBitrate.rate2000k.index == 1
+        expect(
+          buildCanStartRequest(),
+          equals(Uint8List.fromList([0x01, 0x02, 0x01])),
+        );
+      },
+    );
+
+    test('CAN start request uses explicit bitrate indices', () {
+      // ArbBitrate.rate1000k.index == 0, DataBitrate.rate5000k.index == 0
+      expect(
+        buildCanStartRequest(
+          arbBitrate: ArbBitrate.rate1000k,
+          dataBitrate: DataBitrate.rate5000k,
+        ),
+        equals(Uint8List.fromList([0x01, 0x00, 0x00])),
+      );
+      // ArbBitrate.rate250k.index == 3, DataBitrate.rate500k.index == 4
+      expect(
+        buildCanStartRequest(
+          arbBitrate: ArbBitrate.rate250k,
+          dataBitrate: DataBitrate.rate500k,
+        ),
+        equals(Uint8List.fromList([0x01, 0x03, 0x04])),
+      );
     });
 
     test('CAN stop request payload is [0x02]', () {
@@ -484,6 +511,34 @@ void main() {
         () => parseCanStartResponse(Uint8List.fromList([0x02, 0x00])),
         throwsArgumentError,
       );
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // ArbBitrate / DataBitrate enums
+  // ---------------------------------------------------------------------------
+  group('ArbBitrate / DataBitrate enum indices', () {
+    test('ArbBitrate indices match ARB_BITRATE_E firmware values', () {
+      expect(ArbBitrate.rate1000k.index, equals(0));
+      expect(ArbBitrate.rate800k.index,  equals(1));
+      expect(ArbBitrate.rate500k.index,  equals(2));
+      expect(ArbBitrate.rate250k.index,  equals(3));
+      expect(ArbBitrate.rate125k.index,  equals(4));
+      expect(ArbBitrate.rate100k.index,  equals(5));
+      expect(ArbBitrate.rate50k.index,   equals(6));
+      expect(ArbBitrate.rate20k.index,   equals(7));
+      expect(ArbBitrate.rate10k.index,   equals(8));
+    });
+
+    test('DataBitrate indices match DATA_BITRATE_E firmware values', () {
+      expect(DataBitrate.rate5000k.index, equals(0));
+      expect(DataBitrate.rate2000k.index, equals(1));
+      expect(DataBitrate.rate1000k.index, equals(2));
+      expect(DataBitrate.rate800k.index,  equals(3));
+      expect(DataBitrate.rate500k.index,  equals(4));
+      expect(DataBitrate.rate250k.index,  equals(5));
+      expect(DataBitrate.rate125k.index,  equals(6));
+      expect(DataBitrate.rate100k.index,  equals(7));
     });
   });
 
@@ -802,11 +857,30 @@ void main() {
       expect(info.firmwareVersion, equals('1.2.3'));
     });
 
-    test('canStart returns HAL_OK (0)', () async {
+    test('canStart returns HAL_OK (0) with default bitrates', () async {
       await connect();
       injectResponse(Uint8List.fromList([cmdCanStart, 0x00]));
       final status = await device.canStart();
       expect(status, equals(0));
+      // Verify the request frame payload: CMD=0x01, arbIdx=2 (500K), dataIdx=1 (2000K)
+      final sentFrame = written.last;
+      // Payload starts at byte 9 (after TAG+LEN+TS+SEQ)
+      expect(sentFrame[9], equals(cmdCanStart));               // CMD
+      expect(sentFrame[10], equals(ArbBitrate.rate500k.index)); // arb = 2
+      expect(sentFrame[11], equals(DataBitrate.rate2000k.index)); // data = 1
+    });
+
+    test('canStart sends correct indices for explicit bitrates', () async {
+      await connect();
+      injectResponse(Uint8List.fromList([cmdCanStart, 0x00]));
+      await device.canStart(
+        arbBitrate: ArbBitrate.rate250k,
+        dataBitrate: DataBitrate.rate1000k,
+      );
+      final sentFrame = written.last;
+      expect(sentFrame[9],  equals(cmdCanStart));
+      expect(sentFrame[10], equals(ArbBitrate.rate250k.index));  // 3
+      expect(sentFrame[11], equals(DataBitrate.rate1000k.index)); // 2
     });
 
     test('canStop returns HAL_OK (0)', () async {
