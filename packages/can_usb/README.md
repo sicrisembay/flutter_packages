@@ -111,7 +111,7 @@ await device.canStart(
 await device.canStop();    // Stop FDCAN peripheral
 ```
 
-> **Note:** `canStart()` defaults to `ArbBitrate.rate500k` / `DataBitrate.rate2000k` when
+> **Note:** `canStart()` defaults to `ArbBitrate.rate1000k` / `DataBitrate.rate2000k` when
 > no bitrate arguments are supplied.
 
 ### Protocol status and statistics
@@ -154,6 +154,8 @@ final device = CanusbDevice(transport: mockTransport);
 | Symbol | Description |
 |--------|-------------|
 | `CanusbDevice` | High-level device façade — the main entry point |
+| `CanusbDevice.rxFrames` | Broadcast stream of CAN/CAN-FD frames received from the bus |
+| `CanusbDevice.txFrames` | Broadcast stream of CAN/CAN-FD frames successfully sent to the bus |
 | `ISerialTransport` | Abstract transport interface (injectable / mockable) |
 | `SerialPortTransport` | Default transport backed by `flutter_libserialport` |
 | `SerialPortInfo` | Describes an available serial port (`name`, `description`) |

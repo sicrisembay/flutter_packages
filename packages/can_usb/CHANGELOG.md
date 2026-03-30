@@ -7,8 +7,7 @@
 * feat: add `ArbBitrate` and `DataBitrate` enums (`lib/src/models/bitrate.dart`)
   with one value per supported firmware bitrate setting.
 * `CanusbDevice.canStart()` now accepts optional `arbBitrate` and `dataBitrate`
-  named parameters; defaults to `ArbBitrate.rate500k` / `DataBitrate.rate2000k`
-  for backward-compatible behaviour.
+  named parameters; defaults to `ArbBitrate.rate1000k` / `DataBitrate.rate2000k`.
 * Export the new `bitrate.dart` model from the package entry point.
 
 ## 0.1.2

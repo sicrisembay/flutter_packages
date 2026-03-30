@@ -163,7 +163,7 @@ class CanusbDevice {
   /// Closes all stream controllers and disposes the parser.
   /// Call when the device object is no longer needed.
   void dispose() {
-    disconnect();
+    unawaited(disconnect());
     _parserSub?.cancel();
     _parser.dispose();
     _rxFramesCtrl.close();
@@ -191,14 +191,14 @@ class CanusbDevice {
   /// Starts the FDCAN peripheral on the device.
   ///
   /// [arbBitrate] selects the arbitration phase bitrate
-  /// (default: [ArbBitrate.rate500k] — 500 kbit/s).
+  /// (default: [ArbBitrate.rate1000k] — 1000 kbit/s).
   ///
   /// [dataBitrate] selects the data phase bitrate
   /// (default: [DataBitrate.rate2000k] — 2000 kbit/s).
   ///
   /// Returns the HAL status byte (0 = HAL_OK).
   Future<int> canStart({
-    ArbBitrate arbBitrate = ArbBitrate.rate500k,
+    ArbBitrate arbBitrate = ArbBitrate.rate1000k,
     DataBitrate dataBitrate = DataBitrate.rate2000k,
   }) async {
     final resp = await _sendCommand(

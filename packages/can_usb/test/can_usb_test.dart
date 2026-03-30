@@ -862,11 +862,11 @@ void main() {
       injectResponse(Uint8List.fromList([cmdCanStart, 0x00]));
       final status = await device.canStart();
       expect(status, equals(0));
-      // Verify the request frame payload: CMD=0x01, arbIdx=2 (500K), dataIdx=1 (2000K)
+      // Verify the request frame payload: CMD=0x01, arbIdx=0 (1000K), dataIdx=1 (2000K)
       final sentFrame = written.last;
       // Payload starts at byte 9 (after TAG+LEN+TS+SEQ)
-      expect(sentFrame[9], equals(cmdCanStart));               // CMD
-      expect(sentFrame[10], equals(ArbBitrate.rate500k.index)); // arb = 2
+      expect(sentFrame[9], equals(cmdCanStart));                 // CMD
+      expect(sentFrame[10], equals(ArbBitrate.rate1000k.index)); // arb = 0
       expect(sentFrame[11], equals(DataBitrate.rate2000k.index)); // data = 1
     });
 
